@@ -13,16 +13,17 @@ import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { _post } from "@/api/base-api"
 
 // Mock function to generate content based on platform
 const generatePlatformContent = (platform: string, baseContent: string) => {
     switch (platform) {
         case "linkedin":
-            return `${baseContent}\n\n#career #networking #professional`
-        case "twitter":
-            return baseContent.length > 240 ? baseContent.substring(0, 237) + "..." : baseContent
+            return JSON.parse(localStorage.getItem("linkedin")!)
+        case "x":
+            return JSON.parse(localStorage.getItem("x")!)
         case "peerlist":
-            return `${baseContent}\n\nShared with my tech community!`
+            return JSON.parse(localStorage.getItem("peerlist")!)
         default:
             return baseContent
     }
@@ -36,7 +37,7 @@ export default function GeneratedPosts() {
     const content = searchParams.get("content") || ""
     const platforms = {
         linkedin: searchParams.get("linkedin") === "true",
-        twitter: searchParams.get("twitter") === "true",
+        x: searchParams.get("x") === "true",
         peerlist: searchParams.get("peerlist") === "true",
     }
     const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
@@ -53,7 +54,7 @@ export default function GeneratedPosts() {
     // State for loading
     const [loading, setLoading] = useState(true)
     const [selectedPlatformNumber, setSelectedPlatformNumber] = useState(0)
-    const [selectedPost,setSelectedPost] = useState<any>(null)
+    const [selectedPost, setSelectedPost] = useState<any>(null)
     // Generate initial posts
     useEffect(() => {
         const initialPosts: any = {}
@@ -67,9 +68,9 @@ export default function GeneratedPosts() {
             setSelectedPlatformNumber(1)
         }
 
-        if (platforms.twitter) {
-            initialPosts.twitter = {
-                content: generatePlatformContent("twitter", content),
+        if (platforms.x) {
+            initialPosts.x = {
+                content: generatePlatformContent("x", content),
                 saved: false,
                 regenerating: false,
             }
@@ -93,7 +94,7 @@ export default function GeneratedPosts() {
 
     // Handle save post
     const handleSave = (platform: string) => {
-        console.log("platform",platform)
+        console.log("platform", platform)
         setPosts((prev) => ({
             ...prev,
             [platform]: {
@@ -106,7 +107,7 @@ export default function GeneratedPosts() {
     }
 
     // Handle regenerate post
-    const handleRegenerate = (platform: string) => {
+    const handleRegenerate = async (platform: string) => {
         // Set regenerating state
         setPosts((prev) => ({
             ...prev,
@@ -117,20 +118,21 @@ export default function GeneratedPosts() {
         }))
 
         // Simulate API call to regenerate content
-        setTimeout(() => {
-            const newContent = generatePlatformContent(platform, content) + " (regenerated)"
+        const newContent = await _post({ api: "/ai/generate/"+platform, data: { description: content, inspiration: JSON.parse(localStorage.getItem("inspiration")!) } })
+        //   localStorage.setItem("x",JSON.stringify(data))
 
-            setPosts((prev) => ({
-                ...prev,
-                [platform]: {
-                    content: newContent,
-                    saved: false,
-                    regenerating: false,
-                },
-            }))
+        localStorage.setItem(platform,JSON.stringify(newContent))
+        setPosts((prev) => ({
+            ...prev,
+            [platform]: {
+                content: newContent as string,
+                saved: false,
+                regenerating: false,
+            },
+        }))
 
-            toast.success(`${platform.charAt(0).toUpperCase() + platform.slice(1)} post regenerated!`)
-        }, 1500)
+        toast.success(`${platform.charAt(0).toUpperCase() + platform.slice(1)} post regenerated!`)
+
     }
 
     // Get platform icon
@@ -138,7 +140,7 @@ export default function GeneratedPosts() {
         switch (platform) {
             case "linkedin":
                 return <Linkedin className="h-5 w-5 text-blue-600" />
-            case "twitter":
+            case "x":
                 return <Twitter className="h-5 w-5 text-sky-500" />
             case "peerlist":
                 return (
@@ -156,7 +158,7 @@ export default function GeneratedPosts() {
         switch (platform) {
             case "linkedin":
                 return "bg-blue-100 text-blue-800 border-blue-200"
-            case "twitter":
+            case "x":
                 return "bg-sky-100 text-sky-800 border-sky-200"
             case "peerlist":
                 return "bg-gray-100 text-gray-800 border-gray-200"
@@ -207,13 +209,13 @@ export default function GeneratedPosts() {
                                             <CardTitle className="text-lg capitalize">{platform}</CardTitle>
                                         </div>
                                         <Badge variant="outline" className={getPlatformColor(platform)}>
-                                            {platform === "twitter" ? "X / Twitter" : platform.charAt(0).toUpperCase() + platform.slice(1)}
+                                            {platform === "x" ? "X / Twitter" : platform.charAt(0).toUpperCase() + platform.slice(1)}
                                         </Badge>
                                     </div>
                                 </CardHeader>
                                 <Separator />
                                 <CardContent className="pt-4">
-                                    <textarea className="whitespace-pre-wrap min-h-[100px] w-full " defaultValue={post.content} />
+                                    <textarea className="whitespace-pre-wrap min-h-[100px] w-full " value={post.content} readOnly/>
                                 </CardContent>
                                 <CardFooter className="flex justify-between bg-muted/20 py-3">
                                     <Button
@@ -237,7 +239,7 @@ export default function GeneratedPosts() {
                                     <Button
                                         variant={post.saved ? "outline" : "default"}
                                         size="sm"
-                                        onClick={() => {setIsSaveModalOpen(true); setSelectedPost([post,platform])}}
+                                        onClick={() => { setIsSaveModalOpen(true); setSelectedPost([post, platform]) }}
                                         disabled={post.regenerating || post.saved}
                                     >
                                         {post.saved ? (
@@ -284,7 +286,7 @@ export default function GeneratedPosts() {
                             Save
                         </Button>
 
-                        <Button type="button" variant="secondary" onClick={()=>setIsSaveModalOpen(false)}>
+                        <Button type="button" variant="secondary" onClick={() => setIsSaveModalOpen(false)}>
                             Close
                         </Button>
 

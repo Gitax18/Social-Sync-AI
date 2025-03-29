@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "react-toastify"
 import { Checkbox } from "@/components/ui/checkbox"
+import { _post } from "@/api/base-api"
 
 export default function GeneratePost() {
   const router = useRouter()
@@ -35,17 +36,27 @@ export default function GeneratePost() {
       return
     }
 
+    localStorage.setItem("inspiration",JSON.stringify(inspirationalPostContent))
+
     setIsSubmitting(true)
 
     try {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const data = await _post({ api: "/ai/generate/x", data: { description: content, inspiration: inspirationalPostContent } })
+      localStorage.setItem("x",JSON.stringify(data))
 
+      const data1 = await _post({ api: "/ai/generate/linkedin", data: { description: content, inspiration: inspirationalPostContent } })
+      localStorage.setItem("linkedin",JSON.stringify(data1))
+
+      const data2 = await _post({ api: "/ai/generate/peerlist", data: { description: content, inspiration: inspirationalPostContent } })
+      localStorage.setItem("peerlist",JSON.stringify(data2))
+
+      console.log("data", data)
       // Navigate to the generated posts page with query params
       const params = new URLSearchParams({
         content: content,
         linkedin: linkedinSelected.toString(),
-        twitter: twitterSelected.toString(),
+        x: twitterSelected.toString(),
         peerlist: peerlistSelected.toString(),
       })
 
@@ -87,7 +98,7 @@ export default function GeneratePost() {
             </div>
 
             {/* Social Media Platforms Section */}
-            <div className="space-y-2 pt-2 border-t">
+            {/* <div className="space-y-2 pt-2 border-t">
               <Label className="text-base font-medium">Post to platforms</Label>
               <div className="grid grid-cols-3 gap-4 mt-2">
                 <div className="flex items-center space-x-2">
@@ -121,7 +132,7 @@ export default function GeneratePost() {
                   </Label>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="flex justify-between">
             <Link href="/">
