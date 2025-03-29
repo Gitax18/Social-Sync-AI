@@ -25,7 +25,8 @@
     "groq-sdk": "^0.17.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.13.1"
+    "mongoose": "^8.13.1",
+    "react-cookie": "^8.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

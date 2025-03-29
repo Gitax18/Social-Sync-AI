@@ -16,7 +16,7 @@ app.use(express.json());
 
 // routing
 // app.use(AuthRouter);
-app.use("/ai", AiRouter);
+app.use("/api/ai", AiRouter);
 
 app.get("/", (req, res) => res.send("Done"));
 

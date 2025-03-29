@@ -16,7 +16,7 @@ async function generateChatCompetion(mediaType, userPrompt, inspiration = "") {
   );
   // process.exit(0);
   const prompt =
-    inspiration.length > 0
+    inspiration
       ? userPrompt + ". Please use this inspiration:" + inspiration
       : userPrompt;
   const messages = [
