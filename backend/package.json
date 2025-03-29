@@ -15,5 +15,8 @@
     "aws"
   ],
   "author": "4-Hacktastics",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "groq-sdk": "^0.17.0"
+  }
 }
