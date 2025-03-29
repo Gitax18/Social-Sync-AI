@@ -14,6 +14,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { _post } from "@/api/base-api"
+import AiApi from "@/api/ai-api"
 
 // Mock function to generate content based on platform
 const generatePlatformContent = (platform: string, baseContent: string) => {
@@ -118,7 +119,7 @@ export default function GeneratedPosts() {
         }))
 
         // Simulate API call to regenerate content
-        const newContent = await _post({ api: "/ai/generate/"+platform, data: { description: content, inspiration: JSON.parse(localStorage.getItem("inspiration")!) } })
+        const newContent = await AiApi.generate(platform,{ description: content, inspiration: JSON.parse(localStorage.getItem("inspiration")!)})
         //   localStorage.setItem("x",JSON.stringify(data))
 
         localStorage.setItem(platform,JSON.stringify(newContent))

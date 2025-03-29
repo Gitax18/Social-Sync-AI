@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { toast } from "react-toastify"
 import { Checkbox } from "@/components/ui/checkbox"
 import { _post } from "@/api/base-api"
+import AiApi from "@/api/ai-api"
 
 export default function GeneratePost() {
   const router = useRouter()
@@ -42,16 +43,10 @@ export default function GeneratePost() {
 
     try {
       // Simulate API call
-      const data = await _post({ api: "/ai/generate/x", data: { description: content, inspiration: inspirationalPostContent } })
-      localStorage.setItem("x",JSON.stringify(data))
+      await AiApi.generate("x",{description:content,inspiration:inspirationalPostContent})
+      await AiApi.generate("linkedin",{description:content,inspiration:inspirationalPostContent})
+      await AiApi.generate("peerlist",{description:content,inspiration:inspirationalPostContent})
 
-      const data1 = await _post({ api: "/ai/generate/linkedin", data: { description: content, inspiration: inspirationalPostContent } })
-      localStorage.setItem("linkedin",JSON.stringify(data1))
-
-      const data2 = await _post({ api: "/ai/generate/peerlist", data: { description: content, inspiration: inspirationalPostContent } })
-      localStorage.setItem("peerlist",JSON.stringify(data2))
-
-      console.log("data", data)
       // Navigate to the generated posts page with query params
       const params = new URLSearchParams({
         content: content,
