@@ -9,6 +9,10 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "react-toastify"
 import { Loader2, Save, RefreshCw, Check, Twitter, Linkedin } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 
 // Mock function to generate content based on platform
 const generatePlatformContent = (platform: string, baseContent: string) => {
@@ -35,6 +39,7 @@ export default function GeneratedPosts() {
         twitter: searchParams.get("twitter") === "true",
         peerlist: searchParams.get("peerlist") === "true",
     }
+    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
 
     // State for generated posts
     const [posts, setPosts] = useState<{
@@ -47,7 +52,8 @@ export default function GeneratedPosts() {
 
     // State for loading
     const [loading, setLoading] = useState(true)
-
+    const [selectedPlatformNumber, setSelectedPlatformNumber] = useState(0)
+    const [selectedPost,setSelectedPost] = useState<any>(null)
     // Generate initial posts
     useEffect(() => {
         const initialPosts: any = {}
@@ -58,6 +64,7 @@ export default function GeneratedPosts() {
                 saved: false,
                 regenerating: false,
             }
+            setSelectedPlatformNumber(1)
         }
 
         if (platforms.twitter) {
@@ -66,6 +73,8 @@ export default function GeneratedPosts() {
                 saved: false,
                 regenerating: false,
             }
+            setSelectedPlatformNumber(2)
+
         }
 
         if (platforms.peerlist) {
@@ -74,6 +83,8 @@ export default function GeneratedPosts() {
                 saved: false,
                 regenerating: false,
             }
+            setSelectedPlatformNumber(3)
+
         }
 
         setPosts(initialPosts)
@@ -82,6 +93,7 @@ export default function GeneratedPosts() {
 
     // Handle save post
     const handleSave = (platform: string) => {
+        console.log("platform",platform)
         setPosts((prev) => ({
             ...prev,
             [platform]: {
@@ -89,7 +101,7 @@ export default function GeneratedPosts() {
                 saved: true,
             },
         }))
-
+        setIsSaveModalOpen(false)
         toast.success(`${platform.charAt(0).toUpperCase() + platform.slice(1)} post saved!`)
     }
 
@@ -164,12 +176,14 @@ export default function GeneratedPosts() {
 
     return (
         <div className="container max-w-6xl mx-auto py-8">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-6 px-5">
                 <h1 className="text-2xl font-bold">Generated Posts</h1>
                 <Link href="/generate">
                     <Button variant="outline">Back to Editor</Button>
                 </Link>
             </div>
+
+
 
             <div className="space-y-6">
                 {Object.keys(posts).length === 0 ? (
@@ -183,9 +197,9 @@ export default function GeneratedPosts() {
                         </CardContent>
                     </Card>
                 ) : (
-                    <div className="flex justify-between px-5 flex-wrap gap-5">
+                    <div className=" px-5 gap-5  flex justify-center flex-wrap ">
                         {Object.entries(posts).map(([platform, post]) => (
-                            <Card key={platform} className="overflow-hidden w-full max-w-[355px]">
+                            <Card key={platform} className={`overflow-hidden max-w-[355px] w-full`} >
                                 <CardHeader className="pb-3">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center space-x-2">
@@ -199,7 +213,7 @@ export default function GeneratedPosts() {
                                 </CardHeader>
                                 <Separator />
                                 <CardContent className="pt-4">
-                                    <div className="whitespace-pre-wrap min-h-[100px]">{post.content}</div>
+                                    <textarea className="whitespace-pre-wrap min-h-[100px] w-full " defaultValue={post.content} />
                                 </CardContent>
                                 <CardFooter className="flex justify-between bg-muted/20 py-3">
                                     <Button
@@ -223,7 +237,7 @@ export default function GeneratedPosts() {
                                     <Button
                                         variant={post.saved ? "outline" : "default"}
                                         size="sm"
-                                        onClick={() => handleSave(platform)}
+                                        onClick={() => {setIsSaveModalOpen(true); setSelectedPost([post,platform])}}
                                         disabled={post.regenerating || post.saved}
                                     >
                                         {post.saved ? (
@@ -244,6 +258,40 @@ export default function GeneratedPosts() {
                     </div>
                 )}
             </div>
+            <Dialog open={isSaveModalOpen}>
+
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Save Post</DialogTitle>
+                        <DialogDescription>
+                            You can update this title using below input.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex items-center space-x-2">
+                        <div className="grid flex-1 gap-2">
+                            <Label htmlFor="link" className="sr-only">
+                                Link
+                            </Label>
+                            <Input
+                                id="link"
+                                defaultValue="title"
+                            />
+                        </div>
+
+                    </div>
+                    <DialogFooter className="sm:justify-between">
+                        <Button type="button" variant="default" onClick={() => handleSave(selectedPost[1])}>
+                            Save
+                        </Button>
+
+                        <Button type="button" variant="secondary" onClick={()=>setIsSaveModalOpen(false)}>
+                            Close
+                        </Button>
+
+
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

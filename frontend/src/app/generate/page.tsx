@@ -57,7 +57,7 @@ export default function GeneratePost() {
   }
 
   return (
-    <div className="container max-w-6xl mx-auto py-8">
+    <div className="container max-w-6xl mx-auto py-8 px-5">
       <div>
         <form onSubmit={handleSubmit}>
           <div>

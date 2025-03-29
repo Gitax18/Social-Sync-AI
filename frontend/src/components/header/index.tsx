@@ -56,10 +56,10 @@ export default function Header() {
     <header className="bg-white shadow-sm">
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5 flex items-center">
+          <a href="#" className="-m-1.5 p-0.5 flex items-center">
             <span className="sr-only">SocialPost AI</span>
 
-            <span className="ml-2 text-xl font-bold text-indigo-600">SocialPost AI</span>
+            <span className="text-xl font-bold text-indigo-600">SocialPost AI</span>
           </a>
         </div>
         <div className="flex ">
