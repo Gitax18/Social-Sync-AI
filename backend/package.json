@@ -17,6 +17,7 @@
   "author": "4-Hacktastics",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "groq-sdk": "^0.17.0"
   }
 }
