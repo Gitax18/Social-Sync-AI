@@ -5,16 +5,20 @@ const AiRouter = require("./routes/ai.router.js");
 
 const app = express();
 
-app.use(cors({
+app.use(
+  cors({
     origin: process.env.CORS_ORIGIN,
-    credentials: true
-}));
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
 // routing
+// app.use(AuthRouter);
+app.use("/api/ai", AiRouter);
 app.use("/auth",AuthRouter);
 
 app.get("/", (req, res) => res.send("Done"));
 
-module.exports = app
+module.exports = app;
