@@ -83,7 +83,7 @@ npm run dev
 
 - **Credit-based limitations**: Restrict free users to 3 post generations per day.
 - **Subscription Model**:
-  - Pro users can generate up to 20 posts per week.
+  - Pro users can generate up to 20 posts per day.
   - Pro users can switch AI models for improved content generation.
 
 ## License
