@@ -59,7 +59,7 @@ npm run dev
 
 |      Technology       |    Name     |
 | :-------------------: | :---------: |
-|     **Language**      | Javascript  |
+|     **Language**      | Typescript  |
 |     **Framework**     |   Next.JS   |
 | **Component Library** |   ShadCN    |
 |      **Styling**      | TailwindCSS |
@@ -68,7 +68,7 @@ npm run dev
 
 |  Technology  |        Name        |
 | :----------: | :----------------: |
-| **Language** |     JavaScript     |
+| **Language** |     Typescript     |
 | **Library**  |     Express.JS     |
 |    **AI**    |      Groq AI       |
 | **Database** | MongoDB & Mongoose |
