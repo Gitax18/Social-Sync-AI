@@ -13,8 +13,7 @@ app.use(cors({
 app.use(express.json());
 
 // routing
-// app.use(AuthRouter);
-// app.use(AiRouter);
+app.use("/auth",AuthRouter);
 
 app.get("/", (req, res) => res.send("Done"));
 
