@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Syncrhronized your social media posts across different medias.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ai",
+    "llm",
+    "groq",
+    "social",
+    "media",
+    "aws"
+  ],
+  "author": "4-Hacktastics",
+  "license": "ISC"
+}
