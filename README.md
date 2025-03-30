@@ -26,7 +26,7 @@ Additionally, if you follow a structured format for social media posts, you can 
 - **Customizable formatting**: Follow your preferred structure using an inspiration post.
 - **Multi-platform support**: Generate posts for LinkedIn, Peerlist, and X.
 - **Seamless UI/UX**: Easy-to-use interface for content creation and management.
-- - **Two-Factor Authentication**: Verifying user through OTP verification.
+- **Two-Factor Authentication**: Verifying user through OTP verification.
 - **Saving generated posts**: User can save AI generated post for future use.
 - **Viewing saved posts**: Use can view and edit saved post within the platform.
 
