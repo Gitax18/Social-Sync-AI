@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -12,35 +12,51 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast, ToastContainer } from "react-toastify";
+import { useCookies } from "react-cookie"; // Import the cookies hook
+import AuthApi from "@/api/auth-api";
 
 export default function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [cookies, setCookie] = useCookies(["auth_token"]); // Define cookie name to store the JWT
 
+  // Check if already logged in
   useEffect(() => {
-    if (localStorage.getItem("auth") === "true") {
-      router.push("/");
+    if (cookies.auth_token) {
+      router.push("/"); // Redirect if already logged in
     }
-  }, []);
+  }, [cookies.auth_token, router]);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Handle login
+  const handleLogin = async (e: React.FormEvent) => {
+    try {
+      e.preventDefault();
 
-    const STATIC_EMAIL = "admin@example.com";
-    const STATIC_PASSWORD = "password123";
+      // Call the login method from AuthApiService
+      const response = await AuthApi.login({
+        email,
+        password,
+      });
 
-    if (email === STATIC_EMAIL && password === STATIC_PASSWORD) {
-      localStorage.setItem("auth", "true");
+      // Store the JWT token in cookies
+      setCookie("auth_token", response.jwtToken);
+
+      // Redirect to the homepage
       router.push("/");
-    } else {
-      setError("Invalid credentials");
+      toast.success("Login successful!");
+
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error((error as any).message || "Login failed");
     }
   };
 
   return (
     <Card className="mx-auto max-w-sm md:w-xl">
+      <ToastContainer />
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>
@@ -74,9 +90,7 @@ export default function LoginForm() {
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
-              <Link href="#" className="ml-auto inline-block text-sm underline">
-                Forgot your password?
-              </Link>
+             
             </div>
             <Input
               id="password"

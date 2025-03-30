@@ -65,7 +65,7 @@ export default function GeneratePost() {
   return (
     <div className="container max-w-6xl mx-auto py-8 px-5">
       <div>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} method="post">
           <div>
             <h1 className="font-bold text-xl">Generate New Post</h1>
           </div>
@@ -91,43 +91,7 @@ export default function GeneratePost() {
                 required
               />
             </div>
-
-            {/* Social Media Platforms Section */}
-            {/* <div className="space-y-2 pt-2 border-t">
-              <Label className="text-base font-medium">Post to platforms</Label>
-              <div className="grid grid-cols-3 gap-4 mt-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="linkedin"
-                    checked={linkedinSelected}
-                    onCheckedChange={(checked) => setLinkedinSelected(checked as boolean)}
-                  />
-                  <Label htmlFor="linkedin" className="text-sm font-normal cursor-pointer">
-                    LinkedIn
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="twitter"
-                    checked={twitterSelected}
-                    onCheckedChange={(checked) => setTwitterSelected(checked as boolean)}
-                  />
-                  <Label htmlFor="twitter" className="text-sm font-normal cursor-pointer">
-                    Twitter
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="peerlist"
-                    checked={peerlistSelected}
-                    onCheckedChange={(checked) => setPeerlistSelected(checked as boolean)}
-                  />
-                  <Label htmlFor="peerlist" className="text-sm font-normal cursor-pointer">
-                    Peerlist
-                  </Label>
-                </div>
-              </div>
-            </div> */}
+    
           </div>
           <div className="flex justify-between">
             <Link href="/">
