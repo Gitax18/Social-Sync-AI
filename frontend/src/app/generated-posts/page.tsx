@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { _post } from "@/api/base-api";
+import ContentApi from "@/api/content-api"; // Import the ContentApiService
 import AiApi from "@/api/ai-api";
 
 // Mock function to generate content based on platform
@@ -78,6 +78,7 @@ export default function GeneratedPosts() {
   const [loading, setLoading] = useState(true);
   const [selectedPlatformNumber, setSelectedPlatformNumber] = useState(0);
   const [selectedPost, setSelectedPost] = useState<any>(null);
+  const [title,setTitle] = useState("title")
   // Generate initial posts
   useEffect(() => {
     const initialPosts: any = {};
@@ -113,20 +114,35 @@ export default function GeneratedPosts() {
     setLoading(false);
   }, [content]);
 
-  // Handle save post
-  const handleSave = (platform: string) => {
-    console.log("platform", platform);
-    setPosts((prev) => ({
-      ...prev,
-      [platform]: {
-        ...prev[platform],
-        saved: true,
-      },
-    }));
-    setIsSaveModalOpen(false);
-    toast.success(
-      `${platform.charAt(0).toUpperCase() + platform.slice(1)} post saved!`
-    );
+  // Handle save post and save to API
+  const handleSave = async (platform: string) => {
+    // Saving the post via ContentApi
+    try {
+      const postContent = posts[platform]?.content;
+      const newPost = {
+        title, // You can modify how you set the title
+        content: postContent,
+      };
+
+      // Add content using the API
+      const savedPost = await ContentApi.add({...newPost,platform});
+
+      // Update the state to mark it as saved
+      setPosts((prev) => ({
+        ...prev,
+        [platform]: {
+          ...prev[platform],
+          saved: true,
+        },
+      }));
+      setTitle("title")
+      setIsSaveModalOpen(false);
+      toast.success(
+        `${platform.charAt(0).toUpperCase() + platform.slice(1)} post saved!`
+      );
+    } catch (error) {
+      toast.error("Failed to save post.");
+    }
   };
 
   // Handle regenerate post
@@ -145,9 +161,11 @@ export default function GeneratedPosts() {
       description: content,
       inspiration: JSON.parse(localStorage.getItem("inspiration")!),
     });
-    //   localStorage.setItem("x",JSON.stringify(data))
 
+    // Save to local storage
     localStorage.setItem(platform, JSON.stringify(newContent));
+
+    // Update posts state with new content
     setPosts((prev) => ({
       ...prev,
       [platform]: {
@@ -158,9 +176,7 @@ export default function GeneratedPosts() {
     }));
 
     toast.success(
-      `${
-        platform.charAt(0).toUpperCase() + platform.slice(1)
-      } post regenerated!`
+      `${platform.charAt(0).toUpperCase() + platform.slice(1)} post regenerated!`
     );
   };
 
@@ -315,10 +331,10 @@ export default function GeneratedPosts() {
           </DialogHeader>
           <div className="flex items-center space-x-2">
             <div className="grid flex-1 gap-2">
-              <Label htmlFor="link" className="sr-only">
-                Link
+              <Label htmlFor="title" className="sr-only">
+                Title
               </Label>
-              <Input id="link" defaultValue="title" />
+              <Input id="title" defaultValue="title" onChange={(e)=>setTitle(e.target.value)}/>
             </div>
           </div>
           <DialogFooter className="sm:justify-between">

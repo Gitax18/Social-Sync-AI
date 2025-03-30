@@ -1,8 +1,10 @@
+"use client"
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
+import { CookiesProvider } from "react-cookie";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,10 +16,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Social Sync AI",
-  description: "description", // TODO: need to create and add a description here
-};
 
 export default function RootLayout({
   children,
@@ -29,9 +27,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header/>
-        {children}
-        <Footer/>
+        <CookiesProvider defaultSetOptions={{ path: "/" }}>
+          <Header />
+          {children}
+          <Footer />
+        </CookiesProvider>
       </body>
     </html>
   );
